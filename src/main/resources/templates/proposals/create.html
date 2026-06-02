@@ -1,0 +1,70 @@
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<form
+        th:action="@{/web/proposals/create}"
+        th:object="${proposal}"
+        method="post">
+
+    <div class="mb-3">
+
+        <label>Project</label>
+
+        <select
+                th:field="*{project.id}"
+                class="form-select">
+
+            <option
+                    th:each="project : ${projects}"
+                    th:value="${project.id}"
+                    th:text="${project.title}">
+            </option>
+
+        </select>
+
+    </div>
+
+    <div class="mb-3">
+
+        <label>Freelancer</label>
+
+        <select
+                th:field="*{freelancer.id}"
+                class="form-select">
+
+            <option
+                    th:each="user : ${users}"
+                    th:value="${user.id}"
+                    th:text="${user.firstName}">
+            </option>
+
+        </select>
+
+    </div>
+
+    <div class="mb-3">
+
+        <label>Price</label>
+
+        <input
+                type="number"
+                th:field="*{price}"
+                class="form-control">
+    </div>
+
+    <div class="mb-3">
+
+        <label>Message</label>
+
+        <textarea
+                th:field="*{message}"
+                class="form-control">
+        </textarea>
+
+    </div>
+
+    <button class="btn btn-success">
+
+        Save
+
+    </button>
+
+</form>

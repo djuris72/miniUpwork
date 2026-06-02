@@ -1,0 +1,89 @@
+package rs.ac.singidunum.miniUpwork.service;
+
+import org.springframework.stereotype.Service;
+
+import rs.ac.singidunum.miniUpwork.exception.BusinessException;
+import rs.ac.singidunum.miniUpwork.exception.ResourceNotFoundException;
+import rs.ac.singidunum.miniUpwork.model.Project;
+import rs.ac.singidunum.miniUpwork.model.Review;
+import rs.ac.singidunum.miniUpwork.repository.ProjectRepository;
+import rs.ac.singidunum.miniUpwork.repository.ReviewRepository;
+
+import java.util.List;
+
+@Service
+public class ReviewService {
+
+    private final ReviewRepository reviewRepository;
+    private final ProjectRepository projectRepository;
+
+    public ReviewService(
+            ReviewRepository reviewRepository,
+            ProjectRepository projectRepository) {
+
+        this.reviewRepository = reviewRepository;
+        this.projectRepository = projectRepository;
+    }
+
+    public List<Review> findAll() {
+        return reviewRepository.findAll();
+    }
+
+    public Review findById(Long id) {
+        return reviewRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Review not found"));
+    }
+
+    public Review save(Review review) {
+
+        Long projectId = review.getProject().getId();
+
+        Project project =
+                projectRepository.findById(projectId)
+                        .orElseThrow(() ->
+                                new ResourceNotFoundException(
+                                        "Project not found"));
+
+        if (!project.getStatus().name()
+                .equals("COMPLETED")) {
+
+            throw new BusinessException(
+                    "Review can only be left for completed projects");
+        }
+
+        if (reviewRepository.existsByProjectId(projectId)) {
+
+            throw new BusinessException(
+                    "Review already exists");
+        }
+
+        if (review.getRating() < 1
+                || review.getRating() > 5) {
+
+            throw new BusinessException(
+                    "Rating must be between 1 and 5");
+        }
+
+        review.setProject(project);
+
+        return reviewRepository.save(review);
+    }
+
+    public void delete(Long id) {
+        reviewRepository.delete(findById(id));
+    }
+
+    public List<Review> findByReviewedUser(Long userId) {
+        return reviewRepository.findByReviewedUserId(userId);
+    }
+
+    public Double getAverageRating(Long userId) {
+
+        Double average =
+                reviewRepository.findAverageRatingForUser(
+                        userId);
+
+        return average == null ? 0.0 : average;
+    }
+}

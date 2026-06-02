@@ -1,0 +1,55 @@
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<form
+        th:action="@{/web/reviews/create}"
+        th:object="${review}"
+        method="post">
+
+    <div class="mb-3">
+
+        <label>Project</label>
+
+        <select
+                th:field="*{project.id}"
+                class="form-select">
+
+            <option
+                    th:each="project : ${projects}"
+                    th:value="${project.id}"
+                    th:text="${project.title}">
+            </option>
+
+        </select>
+
+    </div>
+
+    <div class="mb-3">
+
+        <label>Rating</label>
+
+        <input
+                type="number"
+                min="1"
+                max="5"
+                th:field="*{rating}"
+                class="form-control">
+
+    </div>
+
+    <div class="mb-3">
+
+        <label>Comment</label>
+
+        <textarea
+                th:field="*{comment}"
+                class="form-control">
+        </textarea>
+
+    </div>
+
+    <button class="btn btn-success">
+
+        Save
+
+    </button>
+
+</form>

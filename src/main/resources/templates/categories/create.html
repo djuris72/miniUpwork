@@ -1,0 +1,18 @@
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<form th:action="@{/web/categories/create}"
+      th:object="${category}"
+      method="post">
+
+    <input
+            type="text"
+            th:field="*{name}"
+            class="form-control">
+
+    <button
+            class="btn btn-success mt-2">
+
+        Save
+
+    </button>
+
+</form>
