@@ -1,12 +1,15 @@
-package rs.ac.singidunum.miniUpwork.contoller.web;
+package rs.ac.singidunum.miniUpwork.controller.web;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import rs.ac.singidunum.miniUpwork.enums.Role;
 import rs.ac.singidunum.miniUpwork.model.Project;
 import rs.ac.singidunum.miniUpwork.service.CategoryService;
 import rs.ac.singidunum.miniUpwork.service.ProjectService;
+import rs.ac.singidunum.miniUpwork.service.ProposalService;
+import rs.ac.singidunum.miniUpwork.service.UserService;
 
 @Controller
 @RequestMapping("/web/projects")
@@ -14,21 +17,36 @@ public class ProjectWebController {
 
     private final ProjectService projectService;
     private final CategoryService categoryService;
+    private final UserService userService;
+    private final ProposalService proposalService;
 
     public ProjectWebController(
             ProjectService projectService,
-            CategoryService categoryService) {
+            CategoryService categoryService,
+            UserService userService,
+            ProposalService proposalService) {
 
         this.projectService = projectService;
         this.categoryService = categoryService;
+        this.userService = userService;
+        this.proposalService = proposalService;
     }
 
     @GetMapping
-    public String list(Model model) {
+    public String list(
+            @RequestParam(required = false) String search,
+            Model model) {
 
-        model.addAttribute(
-                "projects",
-                projectService.findAll());
+        if (search != null && !search.isBlank()) {
+            model.addAttribute(
+                    "projects",
+                    projectService.search(search));
+            model.addAttribute("search", search);
+        } else {
+            model.addAttribute(
+                    "projects",
+                    projectService.findAll());
+        }
 
         return "projects/list";
     }
@@ -43,6 +61,10 @@ public class ProjectWebController {
         model.addAttribute(
                 "categories",
                 categoryService.findAll());
+
+        model.addAttribute(
+                "clients",
+                userService.findByRole(Role.CLIENT));
 
         return "projects/create";
     }
@@ -64,6 +86,10 @@ public class ProjectWebController {
         model.addAttribute(
                 "project",
                 projectService.findById(id));
+
+        model.addAttribute(
+                "proposals",
+                proposalService.findByProject(id));
 
         return "projects/details";
     }
@@ -99,5 +125,23 @@ public class ProjectWebController {
         projectService.delete(id);
 
         return "redirect:/web/projects";
+    }
+
+    @PostMapping("/{id}/complete")
+    public String complete(
+            @PathVariable Long id) {
+
+        projectService.completeProject(id);
+
+        return "redirect:/web/projects/" + id;
+    }
+
+    @PostMapping("/{id}/cancel")
+    public String cancel(
+            @PathVariable Long id) {
+
+        projectService.cancelProject(id);
+
+        return "redirect:/web/projects/" + id;
     }
 }

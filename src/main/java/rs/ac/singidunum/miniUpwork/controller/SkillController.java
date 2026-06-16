@@ -1,4 +1,4 @@
-package rs.ac.singidunum.miniUpwork.contoller;
+package rs.ac.singidunum.miniUpwork.controller;
 
 import org.springframework.web.bind.annotation.*;
 

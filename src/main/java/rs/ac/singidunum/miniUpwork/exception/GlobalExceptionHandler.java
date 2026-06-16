@@ -4,20 +4,22 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.core.annotation.Order;
 
-import rs.ac.singidunum.miniUpwork.dto.ErrorResponseDTO;
+import rs.ac.singidunum.miniUpwork.model.ErrorResponse;
 
-@RestControllerAdvice
+@RestControllerAdvice()
+@Order(3)
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(
             ResourceNotFoundException.class)
-    public ResponseEntity<ErrorResponseDTO>
+    public ResponseEntity<ErrorResponse>
     handleNotFound(
             ResourceNotFoundException ex) {
 
-    	ErrorResponseDTO response =
-                new ErrorResponseDTO(
+    	ErrorResponse response =
+                new ErrorResponse(
                         ex.getMessage(),
                         HttpStatus.NOT_FOUND.value());
 
@@ -28,12 +30,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(
             BusinessException.class)
-    public ResponseEntity<ErrorResponseDTO>
+    public ResponseEntity<ErrorResponse>
     handleBusiness(
             BusinessException ex) {
 
-    	ErrorResponseDTO response =
-                new ErrorResponseDTO(
+    	ErrorResponse response =
+                new ErrorResponse(
                         ex.getMessage(),
                         HttpStatus.BAD_REQUEST.value());
 
@@ -44,12 +46,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(
             Exception.class)
-    public ResponseEntity<ErrorResponseDTO>
+    public ResponseEntity<ErrorResponse>
     handleGeneral(
             Exception ex) {
 
-    	ErrorResponseDTO response =
-                new ErrorResponseDTO(
+    	ErrorResponse response =
+                new ErrorResponse(
                         ex.getMessage(),
                         HttpStatus.INTERNAL_SERVER_ERROR.value());
 

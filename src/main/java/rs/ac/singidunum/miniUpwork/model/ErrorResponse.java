@@ -1,8 +1,8 @@
-package rs.ac.singidunum.miniUpwork.dto;
+package rs.ac.singidunum.miniUpwork.model;
 
 import java.time.LocalDateTime;
 
-public class ErrorResponseDTO {
+public class ErrorResponse {
 
     private String message;
 
@@ -10,7 +10,7 @@ public class ErrorResponseDTO {
 
     private LocalDateTime timestamp;
 
-    public ErrorResponseDTO(
+    public ErrorResponse(
             String message,
             int status) {
 

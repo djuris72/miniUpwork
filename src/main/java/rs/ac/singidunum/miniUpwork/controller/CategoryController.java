@@ -1,4 +1,4 @@
-package rs.ac.singidunum.miniUpwork.contoller;
+package rs.ac.singidunum.miniUpwork.controller;
 
 import org.springframework.web.bind.annotation.*;
 
@@ -36,5 +36,18 @@ public class CategoryController {
             @RequestBody Category category) {
 
         return categoryService.save(category);
+    }
+
+    @PutMapping("/{id}")
+    public Category update(
+            @PathVariable Long id,
+            @RequestBody Category category) {
+
+        return categoryService.update(id, category);
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Long id) {
+        categoryService.delete(id);
     }
 }

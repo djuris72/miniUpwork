@@ -1,7 +1,8 @@
-package rs.ac.singidunum.miniUpwork.contoller;
+package rs.ac.singidunum.miniUpwork.controller;
 
 import org.springframework.web.bind.annotation.*;
 
+import rs.ac.singidunum.miniUpwork.enums.Role;
 import rs.ac.singidunum.miniUpwork.model.User;
 import rs.ac.singidunum.miniUpwork.service.UserService;
 
@@ -22,6 +23,13 @@ public class UserController {
     @GetMapping
     public List<User> findAll() {
         return userService.findAll();
+    }
+
+    @GetMapping("/by-role/{role}")
+    public List<User> findByRole(
+            @PathVariable Role role) {
+
+        return userService.findByRole(role);
     }
 
     @GetMapping("/{id}")

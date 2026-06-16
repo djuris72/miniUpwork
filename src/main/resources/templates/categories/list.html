@@ -12,17 +12,21 @@
 
 <body>
 <div th:replace="~{fragments/navbar :: navbar}"></div>
-<a href="/web/reviews/create"
-   class="btn btn-primary mb-3">
+<div class="container mt-4">
 
-    Create Reviews
+    <h2>Categories</h2>
 
-</a>
-<table class="table">
+    <a href="/web/categories/create"
+       class="btn btn-primary mb-3">
+        Create Category
+    </a>
+
+    <table class="table table-bordered">
 
     <tr>
         <th>ID</th>
         <th>Name</th>
+        <th>Actions</th>
     </tr>
 
     <tr th:each="category : ${categories}">
@@ -31,10 +35,38 @@
 
         <td th:text="${category.name}"></td>
 
+        <td>
+
+            <a th:href="@{/web/categories/edit/{id}(id=${category.id})}"
+               class="btn btn-warning btn-sm">
+                Edit
+            </a>
+
+            <form
+                    th:action="@{/web/categories/delete/{id}(id=${category.id})}"
+                    method="post"
+                    style="display:inline;">
+
+                <button class="btn btn-danger btn-sm">
+                    Delete
+                </button>
+
+            </form>
+
+        </td>
+
     </tr>
 
 </table>
 
+    <div class="mt-3">
+        <a href="/"
+           class="btn btn-secondary">
+            Nazad
+        </a>
+    </div>
+
+</div>
 
 </body>
 </html>

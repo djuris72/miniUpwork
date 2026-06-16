@@ -1,4 +1,4 @@
-package rs.ac.singidunum.miniUpwork.contoller.web;
+package rs.ac.singidunum.miniUpwork.controller.web;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import rs.ac.singidunum.miniUpwork.enums.ProjectStatus;
+import rs.ac.singidunum.miniUpwork.enums.Role;
 import rs.ac.singidunum.miniUpwork.model.Proposal;
 import rs.ac.singidunum.miniUpwork.service.ProjectService;
 import rs.ac.singidunum.miniUpwork.service.ProposalService;
@@ -36,7 +38,7 @@ public class ProposalWebController {
 
         model.addAttribute(
                 "proposals",
-                proposalService.findAll());
+                proposalService.findAllWithDetails());
 
         return "proposals/list";
     }
@@ -50,11 +52,11 @@ public class ProposalWebController {
 
         model.addAttribute(
                 "projects",
-                projectService.findAll());
+                projectService.findByStatus(ProjectStatus.OPEN));
 
         model.addAttribute(
-                "users",
-                userService.findAll());
+                "freelancers",
+                userService.findByRoleWithSkills(Role.FREELANCER));
 
         return "proposals/create";
     }
@@ -73,6 +75,46 @@ public class ProposalWebController {
             @PathVariable Long id) {
 
         proposalService.acceptProposal(id);
+
+        return "redirect:/web/proposals";
+    }
+
+    @PostMapping("/reject/{id}")
+    public String reject(
+            @PathVariable Long id) {
+
+        proposalService.rejectProposal(id);
+
+        return "redirect:/web/proposals";
+    }
+
+    @GetMapping("/edit/{id}")
+    public String editForm(
+            @PathVariable Long id,
+            Model model) {
+
+        model.addAttribute(
+                "proposal",
+                proposalService.findById(id));
+
+        return "proposals/edit";
+    }
+
+    @PostMapping("/edit/{id}")
+    public String edit(
+            @PathVariable Long id,
+            @ModelAttribute Proposal proposal) {
+
+        proposalService.update(id, proposal);
+
+        return "redirect:/web/proposals";
+    }
+
+    @PostMapping("/delete/{id}")
+    public String delete(
+            @PathVariable Long id) {
+
+        proposalService.delete(id);
 
         return "redirect:/web/proposals";
     }

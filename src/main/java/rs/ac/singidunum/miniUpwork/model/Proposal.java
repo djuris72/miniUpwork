@@ -17,7 +17,6 @@ public class Proposal {
 
     private BigDecimal price;
 
-    @Column(length = 2000)
     private String message;
 
     @Enumerated(EnumType.STRING)

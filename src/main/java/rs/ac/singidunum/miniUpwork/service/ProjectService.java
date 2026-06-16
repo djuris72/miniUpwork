@@ -44,15 +44,27 @@ public class ProjectService {
 
     public Project save(Project project) {
 
-        Long clientId = project.getClient().getId();
+        if (project.getClient() == null
+                || project.getClient().getId() == null) {
+            throw new BusinessException(
+                    "Client is required");
+        }
 
-        User client = userRepository.findById(clientId)
+        User client = userRepository.findById(
+                        project.getClient().getId())
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("Client not found"));
+                        new ResourceNotFoundException(
+                                "Client not found"));
 
         if (client.getRole() != Role.CLIENT) {
             throw new BusinessException(
                     "Only clients can create projects");
+        }
+
+        if (project.getCategory() == null
+                || project.getCategory().getId() == null) {
+            throw new BusinessException(
+                    "Category is required");
         }
 
         Long categoryId = project.getCategory().getId();
@@ -70,6 +82,11 @@ public class ProjectService {
     public Project update(Long id, Project updatedProject) {
 
         Project project = findById(id);
+
+        if (project.getStatus() != ProjectStatus.OPEN) {
+            throw new BusinessException(
+                    "Only open projects can be edited");
+        }
 
         project.setTitle(updatedProject.getTitle());
         project.setDescription(updatedProject.getDescription());

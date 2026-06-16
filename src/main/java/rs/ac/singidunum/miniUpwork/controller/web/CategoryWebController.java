@@ -1,9 +1,10 @@
-package rs.ac.singidunum.miniUpwork.contoller.web;
+package rs.ac.singidunum.miniUpwork.controller.web;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -47,6 +48,37 @@ public class CategoryWebController {
             @ModelAttribute Category category) {
 
         categoryService.save(category);
+
+        return "redirect:/web/categories";
+    }
+
+    @GetMapping("/edit/{id}")
+    public String editForm(
+            @PathVariable Long id,
+            Model model) {
+
+        model.addAttribute(
+                "category",
+                categoryService.findById(id));
+
+        return "categories/edit";
+    }
+
+    @PostMapping("/edit/{id}")
+    public String edit(
+            @PathVariable Long id,
+            @ModelAttribute Category category) {
+
+        categoryService.update(id, category);
+
+        return "redirect:/web/categories";
+    }
+
+    @PostMapping("/delete/{id}")
+    public String delete(
+            @PathVariable Long id) {
+
+        categoryService.delete(id);
 
         return "redirect:/web/categories";
     }

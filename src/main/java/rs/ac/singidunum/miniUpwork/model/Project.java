@@ -4,7 +4,6 @@ package rs.ac.singidunum.miniUpwork.model;
 import jakarta.persistence.*;
 import rs.ac.singidunum.miniUpwork.enums.ProjectStatus;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,10 +18,9 @@ public class Project {
 
     private String title;
 
-    @Column(length = 3000)
     private String description;
 
-    private BigDecimal budget;
+    private Integer budget;
 
     @Enumerated(EnumType.STRING)
     private ProjectStatus status;
@@ -80,11 +78,11 @@ public class Project {
 		this.description = description;
 	}
 
-	public BigDecimal getBudget() {
+	public Integer getBudget() {
 		return budget;
 	}
 
-	public void setBudget(BigDecimal budget) {
+	public void setBudget(Integer budget) {
 		this.budget = budget;
 	}
 

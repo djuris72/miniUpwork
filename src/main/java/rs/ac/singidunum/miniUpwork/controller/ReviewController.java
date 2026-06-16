@@ -1,4 +1,4 @@
-package rs.ac.singidunum.miniUpwork.contoller;
+package rs.ac.singidunum.miniUpwork.controller;
 
 import org.springframework.web.bind.annotation.*;
 
@@ -36,6 +36,14 @@ public class ReviewController {
             @RequestBody Review review) {
 
         return reviewService.save(review);
+    }
+
+    @PutMapping("/{id}")
+    public Review update(
+            @PathVariable Long id,
+            @RequestBody Review review) {
+
+        return reviewService.update(id, review);
     }
 
     @DeleteMapping("/{id}")

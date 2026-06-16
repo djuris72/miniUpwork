@@ -14,7 +14,6 @@ public class Review {
 
     private Integer rating;
 
-    @Column(length = 2000)
     private String comment;
 
     private LocalDateTime createdAt;

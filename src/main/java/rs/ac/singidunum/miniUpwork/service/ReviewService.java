@@ -2,6 +2,7 @@ package rs.ac.singidunum.miniUpwork.service;
 
 import org.springframework.stereotype.Service;
 
+import rs.ac.singidunum.miniUpwork.enums.ProjectStatus;
 import rs.ac.singidunum.miniUpwork.exception.BusinessException;
 import rs.ac.singidunum.miniUpwork.exception.ResourceNotFoundException;
 import rs.ac.singidunum.miniUpwork.model.Project;
@@ -45,27 +46,47 @@ public class ReviewService {
                                 new ResourceNotFoundException(
                                         "Project not found"));
 
-        if (!project.getStatus().name()
-                .equals("COMPLETED")) {
-
+        if (project.getStatus() != ProjectStatus.COMPLETED) {
             throw new BusinessException(
                     "Review can only be left for completed projects");
         }
 
-        if (reviewRepository.existsByProjectId(projectId)) {
-
+        if (project.getAssignedFreelancer() == null) {
             throw new BusinessException(
-                    "Review already exists");
+                    "Project has no assigned freelancer");
+        }
+
+        if (reviewRepository.existsByProjectId(projectId)) {
+            throw new BusinessException(
+                    "Review already exists for this project");
         }
 
         if (review.getRating() < 1
                 || review.getRating() > 5) {
-
             throw new BusinessException(
                     "Rating must be between 1 and 5");
         }
 
         review.setProject(project);
+        review.setReviewer(project.getClient());
+        review.setReviewedUser(project.getAssignedFreelancer());
+
+        return reviewRepository.save(review);
+    }
+
+    public Review update(Long id, Review updatedReview) {
+
+        Review review = findById(id);
+
+        if (updatedReview.getRating() < 1
+                || updatedReview.getRating() > 5) {
+
+            throw new BusinessException(
+                    "Rating must be between 1 and 5");
+        }
+
+        review.setRating(updatedReview.getRating());
+        review.setComment(updatedReview.getComment());
 
         return reviewRepository.save(review);
     }
@@ -85,5 +106,13 @@ public class ReviewService {
                         userId);
 
         return average == null ? 0.0 : average;
+    }
+
+    public List<Project> findReviewableProjects() {
+        return projectRepository.findByStatus(ProjectStatus.COMPLETED)
+                .stream()
+                .filter(p -> p.getAssignedFreelancer() != null)
+                .filter(p -> !reviewRepository.existsByProjectId(p.getId()))
+                .toList();
     }
 }

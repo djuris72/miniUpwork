@@ -1,4 +1,4 @@
-package rs.ac.singidunum.miniUpwork.contoller.web;
+package rs.ac.singidunum.miniUpwork.controller.web;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

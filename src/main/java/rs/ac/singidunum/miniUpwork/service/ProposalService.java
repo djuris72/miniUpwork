@@ -38,6 +38,10 @@ public class ProposalService {
         return proposalRepository.findAll();
     }
 
+    public List<Proposal> findAllWithDetails() {
+        return proposalRepository.findAllWithDetails();
+    }
+
     public Proposal findById(Long id) {
         return proposalRepository.findById(id)
                 .orElseThrow(() ->
@@ -133,8 +137,19 @@ public class ProposalService {
         Proposal acceptedProposal =
                 findById(proposalId);
 
+        if (acceptedProposal.getStatus()
+                != ProposalStatus.PENDING) {
+            throw new BusinessException(
+                    "Only pending proposal can be accepted");
+        }
+
         Project project =
                 acceptedProposal.getProject();
+
+        if (project.getStatus() != ProjectStatus.OPEN) {
+            throw new BusinessException(
+                    "Only open projects can accept proposals");
+        }
 
         List<Proposal> proposals =
                 proposalRepository.findByProjectId(
@@ -166,6 +181,22 @@ public class ProposalService {
         projectRepository.save(project);
 
         return acceptedProposal;
+    }
+
+    @Transactional
+    public Proposal rejectProposal(Long proposalId) {
+        Proposal proposal = findById(proposalId);
+
+        if (proposal.getStatus()
+                != ProposalStatus.PENDING) {
+            throw new BusinessException(
+                    "Only pending proposal can be rejected");
+        }
+
+        proposal.setStatus(
+                ProposalStatus.REJECTED);
+
+        return proposalRepository.save(proposal);
     }
 
     public List<Proposal> findByProject(Long projectId) {
